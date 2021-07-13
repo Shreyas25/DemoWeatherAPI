@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.weatherapidemo.databinding.ActivityMainBinding
@@ -19,12 +20,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
+
+        binding.weatherViewModel = viewModel
+
+        binding.lifecycleOwner = this
+
         observeWeatherData()
-        setClickListener()
+//        setClickListener()
     }
 
     private fun setClickListener() {
@@ -41,13 +46,13 @@ class MainActivity : AppCompatActivity() {
     private fun observeWeatherData() {
         viewModel.getWeatherDataObserver().observe(this, Observer { response ->
             if (response != null) {
-                updateUI(response)
+//                updateUI(response)
             } else {
                 Toast.makeText(this, "City not found", Toast.LENGTH_SHORT).show()
             }
         })
 
-        viewModel.makeAPICall("pune")
+//        viewModel.makeAPICall("pune")
     }
 
     private fun updateUI(response: ResponseObject) {
