@@ -1,46 +1,34 @@
 package com.weatherapidemo
 
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.weatherapidemo.databinding.ActivityMainBinding
 import com.weatherapidemo.model.ResponseObject
 import com.weatherapidemo.viewmodel.WeatherViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: WeatherViewModel
     private lateinit var binding: ActivityMainBinding
+    private val viewModel: WeatherViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        viewModel = ViewModelProvider(this).get(WeatherViewModel::class.java)
 
         binding.weatherViewModel = viewModel
 
         binding.lifecycleOwner = this
 
         observeWeatherData()
-//        setClickListener()
-    }
-
-    private fun setClickListener() {
-        binding.btnSearch.setOnClickListener {
-            val queryStr = binding.edtQueryCity.text.toString()
-            if (queryStr.isEmpty()) {
-                viewModel.makeAPICall("pune")
-            } else {
-                viewModel.makeAPICall(query = queryStr)
-            }
-        }
     }
 
     private fun observeWeatherData() {
@@ -55,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 //        viewModel.makeAPICall("pune")
     }
 
-    private fun updateUI(response: ResponseObject) {
+    /*private fun updateUI(response: ResponseObject) {
         val sunriseValue = response.city.sunrise
         val sunsetValue = response.city.sunset
         val timeZoneValue = response.city.timezone
@@ -85,5 +73,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         return date
-    }
+    }*/
 }
