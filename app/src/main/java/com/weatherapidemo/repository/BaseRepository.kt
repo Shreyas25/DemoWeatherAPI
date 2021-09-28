@@ -7,19 +7,17 @@ import retrofit2.Response
 
 open class BaseRepository {
 
-    suspend fun <T > apiCallRequest(call: suspend () -> Response<T>)= liveData(Dispatchers.IO) {
+    suspend fun <T> apiCallRequest(call: suspend () -> Response<T>) = liveData(Dispatchers.IO) {
 
         val response: Response<T>
         try {
-            response = call.invoke()  //or
+            response = call.invoke()
             if (response!!.isSuccessful) {
                 emit(Resource.success(response.body()))
-            }
-            else{
+            } else {
                 emit(Resource.error(UnknownError("ERROR_WENT_WRONG"), null))
             }
-        }catch (e:Exception)
-        {
+        } catch (e: Exception) {
             emit(Resource.error(e, null))
         }
     }

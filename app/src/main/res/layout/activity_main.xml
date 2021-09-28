@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@{weatherViewModel.weatherDataObserver.city.name}"
+            android:text="@{weatherViewModel.weatherDataObserver.data.city.name}"
             android:textColor="@color/black"
             android:textSize="30sp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -61,7 +61,7 @@
             android:id="@+id/country_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{weatherViewModel.weatherDataObserver.city.country}"
+            android:text="@{weatherViewModel.weatherDataObserver.data.city.country}"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@{weatherViewModel.weatherDataObserver.city._sunrise}"
+                    android:text="@{weatherViewModel.sunriseData}"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -123,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@{weatherViewModel.weatherDataObserver.city._sunset}"
+                    android:text="@{weatherViewModel.sunsetData}"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 

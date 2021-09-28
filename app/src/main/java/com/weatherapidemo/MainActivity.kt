@@ -1,6 +1,7 @@
 package com.weatherapidemo
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -34,8 +35,10 @@ class MainActivity : AppCompatActivity() {
     private fun observeWeatherData() {
         viewModel.getWeatherDataObserver().observe(this, Observer { response ->
             if (response != null) {
-//                updateUI(response)
+                Log.d("observeWeatherData", "${response.data}")
+//                response.data?.let { updateUI(it) }
             } else {
+                Log.d("Weather API Demo", "Info: City not found")
                 Toast.makeText(this, "City not found", Toast.LENGTH_SHORT).show()
             }
         })
