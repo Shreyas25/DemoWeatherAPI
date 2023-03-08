@@ -1,18 +1,14 @@
 package com.weatherapidemo.network
 
 import com.weatherapidemo.model.WeatherResponse
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
-import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface ApiService {
+interface ApiHelper {
 
-    @GET("forecast")
-    suspend fun getCityData(
+    fun getCityData(
         @Query("q") query: String,
         @Query("appid") appID: String,
-    ): Response<WeatherResponse>
-
-
+    ): Flow<Response<WeatherResponse>>
 }
-

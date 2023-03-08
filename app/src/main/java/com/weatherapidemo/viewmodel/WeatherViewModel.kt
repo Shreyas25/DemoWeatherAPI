@@ -2,7 +2,7 @@ package com.weatherapidemo.viewmodel
 
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import com.weatherapidemo.model.ResponseObject
+import com.weatherapidemo.model.WeatherResponse
 import com.weatherapidemo.others.Resource
 import com.weatherapidemo.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +19,9 @@ class WeatherViewModel @Inject constructor(private val appRepository: WeatherRep
     ViewModel() {
 
     val edtQueryData: MutableLiveData<String> = MutableLiveData()
-    private var weatherData: MutableLiveData<Resource<ResponseObject>> = MutableLiveData()
+    private var weatherData: MutableLiveData<Resource<WeatherResponse>> = MutableLiveData()
 
-    fun getWeatherDataObserver(): LiveData<Resource<ResponseObject>> {
+    fun getWeatherDataObserver(): LiveData<Resource<WeatherResponse>> {
         return weatherData
     }
 
@@ -31,7 +31,7 @@ class WeatherViewModel @Inject constructor(private val appRepository: WeatherRep
     private val _sunsetData = MutableLiveData<String>()
     val sunsetData: LiveData<String> = _sunsetData
 
-    private var observer: Observer<Resource<ResponseObject>>? = null
+    private var observer: Observer<Resource<WeatherResponse>>? = null
 
     //Need to handle exception later.
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
@@ -55,7 +55,7 @@ class WeatherViewModel @Inject constructor(private val appRepository: WeatherRep
             weatherData = appRepository.getCityData(
                 query,
                 APP_ID
-            ) as MutableLiveData<Resource<ResponseObject>>
+            ) as MutableLiveData<Resource<WeatherResponse>>
 
             observer = Observer { result ->
                 if (result.data != null) {
@@ -68,14 +68,14 @@ class WeatherViewModel @Inject constructor(private val appRepository: WeatherRep
 
     }
 
-    private fun getSunriseData(data: ResponseObject?) {
+    private fun getSunriseData(data: WeatherResponse?) {
         val sunriseValue = data?.city?.sunrise
         val timeZoneValue = data?.city?.timezone
         var sunriseStr = convertValue(sunriseValue, "hh:mm a", timeZoneValue)
         _sunriseData.value = sunriseStr
     }
 
-    private fun getSunsetData(data: ResponseObject?) {
+    private fun getSunsetData(data: WeatherResponse?) {
         val sunsetValue = data?.city?.sunset
         val timeZoneValue = data?.city?.timezone
         var sunsetStr = convertValue(sunsetValue, "hh:mm a", timeZoneValue)

@@ -8,11 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.weatherapidemo.databinding.ActivityMainBinding
-import com.weatherapidemo.model.ResponseObject
 import com.weatherapidemo.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

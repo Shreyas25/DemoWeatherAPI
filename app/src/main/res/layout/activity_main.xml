@@ -11,7 +11,7 @@
 
         <variable
             name="responseObject"
-            type="com.weatherapidemo.model.ResponseObject" />
+            type="com.weatherapidemo.model.WeatherResponse" />
 
     </data>
 
