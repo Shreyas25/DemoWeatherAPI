@@ -7,9 +7,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.weatherapidemo.databinding.ActivityMainBinding
+import com.weatherapidemo.others.Result
 import com.weatherapidemo.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -30,15 +33,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeWeatherData() {
-        viewModel.getWeatherDataObserver().observe(this, Observer { response ->
-            if (response != null) {
-                Log.d("observeWeatherData", "${response.data}")
-//                response.data?.let { updateUI(it) }
-            } else {
-                Log.d("Weather API Demo", "Info: City not found")
-                Toast.makeText(this, "City not found", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launchWhenStarted {
+            viewModel.cityData.collect { it ->
+                when (it) {
+                    is Result.Loading -> {
+                    }
+                    is Result.Failure -> {
+                        Log.d("MAIN", "" + it.msg)
+                    }
+                    is Result.Success -> {
+                        Log.d("MAIN", "" + it.data)
+                        val response = it.data
+                        if (response != null) {
+                            viewModel.getSunriseData(response)
+                            viewModel.getSunsetData(response)
+                        }
+                    }
+                }
             }
-        })
+        }
+
+        /*viewModel.getWeatherDataObserver().observe(this, Observer { response ->
+                if (response != null) {
+                    Log.d("observeWeatherData", "${response.data}")
+    //                response.data?.let { updateUI(it) }
+                } else {
+                    Log.d("Weather API Demo", "Info: City not found")
+                    Toast.makeText(this, "City not found", Toast.LENGTH_SHORT).show()
+                }
+            })*/
 
 //        viewModel.makeAPICall("pune")
     }

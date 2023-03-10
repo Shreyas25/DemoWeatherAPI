@@ -11,7 +11,7 @@
 
         <variable
             name="responseObject"
-            type="com.weatherapidemo.model.WeatherResponse" />
+            type="com.weatherapidemo.data.model.WeatherResponse" />
 
     </data>
 
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@{weatherViewModel.weatherDataObserver.data.city.name}"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="30sp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -61,7 +61,7 @@
             android:id="@+id/country_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{weatherViewModel.weatherDataObserver.data.city.country}"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintLeft_toLeftOf="parent"

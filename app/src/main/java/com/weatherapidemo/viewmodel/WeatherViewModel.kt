@@ -1,12 +1,18 @@
 package com.weatherapidemo.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import com.weatherapidemo.model.WeatherResponse
+import com.weatherapidemo.data.model.WeatherResponse
 import com.weatherapidemo.others.Resource
-import com.weatherapidemo.repository.WeatherRepository
+import com.weatherapidemo.data.repository.WeatherRepository
+import com.weatherapidemo.others.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,11 +25,6 @@ class WeatherViewModel @Inject constructor(private val appRepository: WeatherRep
     ViewModel() {
 
     val edtQueryData: MutableLiveData<String> = MutableLiveData()
-    private var weatherData: MutableLiveData<Resource<WeatherResponse>> = MutableLiveData()
-
-    fun getWeatherDataObserver(): LiveData<Resource<WeatherResponse>> {
-        return weatherData
-    }
 
     private val _sunriseData = MutableLiveData<String>()
     val sunriseData: LiveData<String> = _sunriseData
@@ -31,51 +32,44 @@ class WeatherViewModel @Inject constructor(private val appRepository: WeatherRep
     private val _sunsetData = MutableLiveData<String>()
     val sunsetData: LiveData<String> = _sunsetData
 
-    private var observer: Observer<Resource<WeatherResponse>>? = null
-
-    //Need to handle exception later.
-    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        weatherData.postValue(null)
-    }
+    //STATE FLOW
+    private val _cityData: MutableStateFlow<Result<WeatherResponse>> =
+        MutableStateFlow(Result.Loading)
+    val cityData: StateFlow<Result<WeatherResponse>> = _cityData
 
     init {
-        makeAPICall("Pune")
+        getData("Pune")
+    }
+
+    private fun getData(city: String) {
+        viewModelScope.launch {
+            _cityData.value = Result.Loading
+            appRepository.getWeatherData(city, APP_ID)
+                .catch { e ->
+                    _cityData.value = Result.Failure(e)
+                }.collect { data ->
+                    _cityData.value = data
+                    Log.d("RESPONSE", "" + data)
+                }
+        }
     }
 
     fun onClickSearch() {
-        if ((edtQueryData.value != null) && (edtQueryData.value.toString().isNotEmpty())) {
+        /*if ((edtQueryData.value != null) && (edtQueryData.value.toString().isNotEmpty())) {
             makeAPICall(edtQueryData.value.toString())
         } else {
             makeAPICall("Pune")
-        }
+        }*/
     }
 
-    fun makeAPICall(query: String) {
-        viewModelScope.launch {
-            weatherData = appRepository.getCityData(
-                query,
-                APP_ID
-            ) as MutableLiveData<Resource<WeatherResponse>>
-
-            observer = Observer { result ->
-                if (result.data != null) {
-                    getSunriseData(result.data)
-                    getSunsetData(result.data)
-                }
-            }
-        }
-        weatherData.observeForever(observer!!)
-
-    }
-
-    private fun getSunriseData(data: WeatherResponse?) {
+    fun getSunriseData(data: WeatherResponse?) {
         val sunriseValue = data?.city?.sunrise
         val timeZoneValue = data?.city?.timezone
         var sunriseStr = convertValue(sunriseValue, "hh:mm a", timeZoneValue)
         _sunriseData.value = sunriseStr
     }
 
-    private fun getSunsetData(data: WeatherResponse?) {
+    fun getSunsetData(data: WeatherResponse?) {
         val sunsetValue = data?.city?.sunset
         val timeZoneValue = data?.city?.timezone
         var sunsetStr = convertValue(sunsetValue, "hh:mm a", timeZoneValue)
@@ -97,6 +91,6 @@ class WeatherViewModel @Inject constructor(private val appRepository: WeatherRep
     }
 
     fun tearDown() {
-        weatherData.removeObserver(observer!!)
+//        weatherData.removeObserver(observer!!)
     }
 }

@@ -1,4 +1,4 @@
-package com.weatherapidemo.model
+package com.weatherapidemo.data.model
 
 data class City(
     var country: String = "",

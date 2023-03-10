@@ -1,6 +1,6 @@
-package com.weatherapidemo.repository
+package com.weatherapidemo.data.repository
 
-import com.weatherapidemo.others.ApiState
+import com.weatherapidemo.others.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -9,28 +9,28 @@ import retrofit2.Response
 
 abstract class BaseRepo {
 
-    suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): Flow<ApiState<T>> = flow {
-        emit(ApiState.Loading)
+    suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): Flow<Result<T>> = flow {
+        emit(Result.Loading)
         val response: Response<T>
         try {
             response = apiCall.invoke()
             if (response.isSuccessful) {
                 val data = response.body()
                 if (data != null) {
-                    emit(ApiState.Success(data))
+                    emit(Result.Success(data))
                 }else{
                     val error = response.errorBody()
                     if(error!=null){
-                        emit(ApiState.Failure(Exception(error.toString())))
+                        emit(Result.Failure(Exception(error.toString())))
                     }else{
-                        emit(ApiState.Failure(Exception("Something went wrong..")))
+                        emit(Result.Failure(Exception("Something went wrong..")))
                     }
                 }
             }else{
-                emit(ApiState.Failure(Throwable(response.errorBody().toString())))
+                emit(Result.Failure(Throwable(response.errorBody().toString())))
             }
         } catch (e: Exception) {
-            emit(ApiState.Failure(e))
+            emit(Result.Failure(e))
         }
     }.flowOn(Dispatchers.IO)
 }

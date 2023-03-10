@@ -3,9 +3,9 @@ package com.weatherapidemo.di
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.weatherapidemo.BuildConfig
-import com.weatherapidemo.network.ApiService
+import com.weatherapidemo.data.network.ApiService
 import com.weatherapidemo.others.BASE_URL
-import com.weatherapidemo.repository.WeatherRepository
+import com.weatherapidemo.data.repository.WeatherRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,9 +63,5 @@ object AppModule {
 
     @Provides
     fun provideAPIService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
-
-    @Singleton
-    @Provides
-    fun provideRepository(apiService: ApiService) = WeatherRepository(apiService)
 
 }

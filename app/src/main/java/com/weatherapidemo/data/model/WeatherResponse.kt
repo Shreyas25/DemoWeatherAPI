@@ -1,4 +1,4 @@
-package com.weatherapidemo.model
+package com.weatherapidemo.data.model
 
 data class WeatherResponse(
     val city: City = City(),

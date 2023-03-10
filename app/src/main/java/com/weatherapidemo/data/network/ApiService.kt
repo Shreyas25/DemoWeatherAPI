@@ -1,6 +1,6 @@
-package com.weatherapidemo.network
+package com.weatherapidemo.data.network
 
-import com.weatherapidemo.model.WeatherResponse
+import com.weatherapidemo.data.model.WeatherResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
